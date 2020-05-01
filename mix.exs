@@ -4,9 +4,11 @@ defmodule Lexdee.MixProject do
   def project do
     [
       app: :lexdee,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
+      package: package(),
+      description: description(),
       deps: deps()
     ]
   end
@@ -15,6 +17,23 @@ defmodule Lexdee.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp description do
+    """
+    Client library for LXD
+    """
+  end
+
+  defp package do
+    [
+      name: "lexdee",
+      organization: "upmaru",
+      files: ["lib", "mix.exs", "README*", "LICENSE"],
+      licenses: ["MIT"],
+      maintainers: ["Zack Siri"],
+      links: %{"GitHub" => "https://github.com/upmaru/lexdee"}
     ]
   end
 
