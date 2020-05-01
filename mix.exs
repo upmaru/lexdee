@@ -29,7 +29,6 @@ defmodule Lexdee.MixProject do
   defp package do
     [
       name: "lexdee",
-      organization: "upmaru",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
       licenses: ["MIT"],
       maintainers: ["Zack Siri"],
