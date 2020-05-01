@@ -6,6 +6,7 @@ defmodule Lexdee.Client do
 
   def new(base_url, cert \\ nil, key \\ nil) do
     middleware = [
+      Lexdee.Response,
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON
     ]
