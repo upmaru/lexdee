@@ -4,7 +4,7 @@ defmodule Lexdee.MixProject do
   def project do
     [
       app: :lexdee,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       package: package(),
@@ -29,7 +29,6 @@ defmodule Lexdee.MixProject do
   defp package do
     [
       name: "lexdee",
-      organization: "upmaru",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
       licenses: ["MIT"],
       maintainers: ["Zack Siri"],
