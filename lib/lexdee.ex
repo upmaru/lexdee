@@ -25,11 +25,26 @@ defmodule Lexdee do
   alias Lexdee.Instances
 
   defdelegate list_instances(client), to: Instances, as: :index
+  defdelegate get_instance(client, id), to: Instances, as: :show
   defdelegate create_instance(client, params), to: Instances, as: :create
+
+  defdelegate get_instance_state(client, id), to: Instances.State, as: :show
 
   defdelegate start_instance(client, id, options \\ []),
     to: Instances.State,
     as: :start
+
+  defdelegate stop_instance(client, id, options \\ []),
+    to: Instances.State,
+    as: :stop
+
+  defdelegate restart_instance(client, id, options \\ []),
+    to: Instances.State,
+    as: :restart
+
+  defdelegate create_file(client, id, path, content),
+    to: Instances.Files,
+    as: :create
 
   alias Lexdee.Operations
 
