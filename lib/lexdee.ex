@@ -28,7 +28,7 @@ defmodule Lexdee do
   defdelegate get_instance(client, id), to: Instances, as: :show
   defdelegate create_instance(client, params), to: Instances, as: :create
 
-  defdelegate get_instance_state(client, id), to: Instances.State, as: :show
+  defdelegate get_state(client, id), to: Instances.State, as: :show
 
   defdelegate start_instance(client, id, options \\ []),
     to: Instances.State,
