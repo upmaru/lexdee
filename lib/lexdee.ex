@@ -27,6 +27,10 @@ defmodule Lexdee do
   defdelegate list_instances(client), to: Instances, as: :index
   defdelegate create_instance(client, params), to: Instances, as: :create
 
+  defdelegate start_instance(client, id, options \\ []),
+    to: Instances.State,
+    as: :start
+
   alias Lexdee.Operations
 
   defdelegate get_operation(client, id), to: Operations, as: :show
