@@ -5,9 +5,15 @@ defmodule Lexdee.Certificates do
   def index(client), do: Tesla.get(client, @path)
 
   def create(client, params) do
+    certificate =
+      Map.fetch!(params, "certificate")
+      |> X509.Certificate.from_pem!()
+      |> X509.Certificate.to_der()
+      |> Base.encode64()
+
     params =
       Map.merge(params, %{
-        "certificate" => Base.encode64(Map.fetch!(params, "certificate")),
+        "certificate" => certificate,
         "type" => "client"
       })
 
