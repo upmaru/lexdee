@@ -29,6 +29,7 @@ defmodule Lexdee do
   alias Cluster.Members
 
   defdelegate get_cluster_members(client), to: Members, as: :index
+  defdelegate get_cluster_member(client, id), to: Members, as: :show
 
   alias Lexdee.Instances
 
