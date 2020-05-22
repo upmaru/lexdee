@@ -22,6 +22,15 @@ defmodule Lexdee do
     to: Certificates,
     as: :update
 
+  alias Lexdee.Cluster
+
+  defdelegate get_cluster(client), to: Cluster, as: :show
+
+  alias Cluster.Members
+
+  defdelegate get_cluster_members(client), to: Members, as: :index
+  defdelegate get_cluster_member(client, id), to: Members, as: :show
+
   alias Lexdee.Instances
 
   defdelegate list_instances(client), to: Instances, as: :index
