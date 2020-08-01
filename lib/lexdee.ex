@@ -12,6 +12,12 @@ defmodule Lexdee do
       :world
 
   """
+  alias Lexdee.Client
+
+  defdelegate create_client(base_url, cert \\ nil, key \\ nil),
+    to: Client,
+    as: :new
+
   alias Lexdee.Certificates
 
   defdelegate list_certificates(client), to: Certificates, as: :index

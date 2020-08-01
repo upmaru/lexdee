@@ -11,13 +11,7 @@ defmodule Lexdee.Client do
       Tesla.Middleware.JSON
     ]
 
-    adapter =
-      {Tesla.Adapter.Mint,
-       transport_opts: [
-         verify: :verify_none,
-         cert: build_cert(cert || File.read!(cert_path())),
-         key: build_key(key || File.read!(key_path()))
-       ]}
+    adapter = get_adapter(cert, key)
 
     Tesla.client(middleware, adapter)
   end
@@ -34,6 +28,21 @@ defmodule Lexdee.Client do
     cert
     |> Certificate.from_pem!()
     |> Certificate.to_der()
+  end
+
+  defp get_adapter(cert, key) do
+    case Mix.env() do
+      :test ->
+        {Tesla.Adapter.Mint, []}
+
+      _ ->
+        {Tesla.Adapter.Mint,
+         transport_opts: [
+           verify: :verify_none,
+           cert: build_cert(cert || File.read!(cert_path())),
+           key: build_key(key || File.read!(key_path()))
+         ]}
+    end
   end
 
   defp cert_path,
