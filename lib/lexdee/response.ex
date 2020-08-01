@@ -6,7 +6,7 @@ defmodule Lexdee.Response do
     |> Tesla.run(next)
     |> case do
       {:ok, %{status: status, body: %{"metadata" => response}}}
-      when status in [200, 202] ->
+      when status in [200, 201, 202] ->
         {:ok, response}
 
       {:ok, %{body: response}} ->
