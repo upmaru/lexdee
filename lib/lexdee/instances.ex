@@ -1,5 +1,5 @@
 defmodule Lexdee.Instances do
-  use Telsa
+  use Tesla
 
   @path "/1.0/instances"
 

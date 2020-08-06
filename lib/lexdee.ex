@@ -41,7 +41,10 @@ defmodule Lexdee do
 
   defdelegate list_instances(client), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
-  defdelegate create_instance(client, params), to: Instances, as: :create
+
+  defdelegate create_instance(client, params, opts \\ []),
+    to: Instances,
+    as: :create
 
   defdelegate get_state(client, id), to: Instances.State, as: :show
 
