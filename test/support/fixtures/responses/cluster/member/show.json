@@ -1,0 +1,17 @@
+{
+  "type": "sync",
+  "status": "Success",
+  "status_code": 200,
+  "operation": "",
+  "error_code": 0,
+  "error": "",
+  "metadata": {
+    "roles": ["database"],
+    "architecture": "x86_64",
+    "server_name": "lxd-experiment",
+    "url": "https://[::]:8443",
+    "database": true,
+    "status": "Online",
+    "message": "fully operational"
+  }
+}

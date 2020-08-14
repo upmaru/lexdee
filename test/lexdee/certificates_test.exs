@@ -3,7 +3,8 @@ defmodule Lexdee.CertificatesTest do
 
   describe "create certificate" do
     setup do
-      response = File.read!("test/support/fixtures/create_certificate.json")
+      response =
+        File.read!("test/support/fixtures/responses/certificate/create.json")
 
       cert = File.read!("test/support/fixtures/cert/cert.pem")
 
