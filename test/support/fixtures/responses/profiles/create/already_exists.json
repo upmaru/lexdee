@@ -1,0 +1,5 @@
+{
+  "error": "Error inserting some-profile into database: The profile already exists",
+  "error_code": 500,
+  "type": "error"
+}
