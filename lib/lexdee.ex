@@ -72,4 +72,8 @@ defmodule Lexdee do
   alias Lexdee.Operations
 
   defdelegate get_operation(client, id), to: Operations, as: :show
+
+  defdelegate wait_for_operation(client, id, options \\ []),
+    to: Operations,
+    as: :wait
 end
