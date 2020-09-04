@@ -18,6 +18,11 @@ defmodule Lexdee do
     to: Client,
     as: :new
 
+  alias Lexdee.Profiles
+
+  defdelegate list_profiles(client), to: Profiles, as: :index
+  defdelegate create_profile(client, params), to: Profiles, as: :create
+
   alias Lexdee.Certificates
 
   defdelegate list_certificates(client), to: Certificates, as: :index
