@@ -4,7 +4,7 @@ defmodule Lexdee.InstancesTest do
   describe "create instance" do
     setup do
       response =
-        File.read!("test/support/fixtures/responses/instance/create.json")
+        File.read!("test/support/fixtures/responses/instances/create.json")
 
       bypass = Bypass.open()
 
