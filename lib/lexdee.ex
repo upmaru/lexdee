@@ -44,6 +44,10 @@ defmodule Lexdee do
 
   alias Lexdee.Instances
 
+  defdelegate execute_command(client, id, commands, opts \\ []),
+    to: Instances.Exec,
+    as: :perform
+
   defdelegate list_instances(client), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
 
