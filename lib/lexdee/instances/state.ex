@@ -1,15 +1,24 @@
 defmodule Lexdee.Instances.State do
+  alias Lexdee.Instances
+
   @path "/state"
 
+  @spec show(Tesla.Client.t(), binary) :: {:error, any} | {:ok, Tesla.Env.t()}
   def show(client, id), do: Tesla.get(client, Path.join(id, @path))
 
-  def start(client, id, options),
+  @spec start(Tesla.Client.t(), binary, Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def start(client, id, options \\ []),
     do: execute(client, id, %{"action" => "start"}, options)
 
-  def stop(client, id, options),
+  @spec stop(Tesla.Client.t(), binary, Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def stop(client, id, options \\ []),
     do: execute(client, id, %{"action" => "stop"}, options)
 
-  def restart(client, id, options),
+  @spec restart(Tesla.Client.t(), binary, Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def restart(client, id, options \\ []),
     do: execute(client, id, %{"action" => "restart"}, options)
 
   defp execute(client, id, base_params, options) do
@@ -20,6 +29,6 @@ defmodule Lexdee.Instances.State do
         "stateful" => Keyword.get(options, :stateful, false)
       })
 
-    Tesla.put(client, Path.join(id, @path), params)
+    Tesla.put(client, Path.join([Instances.base_path(), id, @path]), params)
   end
 end
