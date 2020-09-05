@@ -4,21 +4,18 @@ defmodule Lexdee.Instances.Exec do
 
   @path "/exec"
 
-  @default_params %{
-    "environment" => {},
-    "wait-for-websocket" => false,
-    "record-output" => true,
-    "interactive" => false
-  }
-
   @spec perform(Testla.Client.t(), list(String.t()), Keyword.t()) ::
           {:error, any} | {:ok, Tesla.Env.t()}
-  def perform(client, id, commands, opts \\ []) do
-    params =
-      @default_params
-      |> Map.merge(%{
-        "command" => commands
-      })
+  def perform(client, id, command, opts \\ []) do
+    settings = Keyword.get(opts, :settings, %{})
+
+    params = %{
+      "command" => ["/bin/sh", "-c", command],
+      "environment" => Map.get(settings, :environment, %{}),
+      "wait-for-websocket" => Map.get(settings, :wait_for_websocket, false),
+      "record-output" => Map.get(settings, :record_output, true),
+      "interactive" => Map.get(settings, :interactive, false)
+    }
 
     path =
       [Instances.base_path(), id, @path]
