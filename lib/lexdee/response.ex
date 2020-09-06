@@ -9,6 +9,9 @@ defmodule Lexdee.Response do
       when status in [200, 201, 202] ->
         {:ok, response}
 
+      {:ok, %{status: status, body: body}} when status in [200] ->
+        {:ok, body}
+
       {:ok, %{body: response}} ->
         {:error, response}
 
