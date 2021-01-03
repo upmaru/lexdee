@@ -35,6 +35,7 @@ defmodule Lexdee.Client do
       {Tesla.Adapter.Mint, []}
     else
       {Tesla.Adapter.Mint,
+       timeout: 30_000,
        transport_opts: [
          verify: :verify_none,
          cert: build_cert(cert || File.read!(cert_path())),
