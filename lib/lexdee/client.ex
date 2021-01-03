@@ -31,17 +31,15 @@ defmodule Lexdee.Client do
   end
 
   defp get_adapter(cert, key) do
-    case Mix.env() do
-      :test ->
-        {Tesla.Adapter.Mint, []}
-
-      _ ->
-        {Tesla.Adapter.Mint,
-         transport_opts: [
-           verify: :verify_none,
-           cert: build_cert(cert || File.read!(cert_path())),
-           key: build_key(key || File.read!(key_path()))
-         ]}
+    if Process.whereis(Mix.State) != nil && Mix.env() == :test do
+      {Tesla.Adapter.Mint, []}
+    else
+      {Tesla.Adapter.Mint,
+       transport_opts: [
+         verify: :verify_none,
+         cert: build_cert(cert || File.read!(cert_path())),
+         key: build_key(key || File.read!(key_path()))
+       ]}
     end
   end
 
