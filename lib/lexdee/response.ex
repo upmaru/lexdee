@@ -9,8 +9,8 @@ defmodule Lexdee.Response do
       when status in [200, 201, 202] ->
         {:ok, %{env | body: response}}
 
-      {:ok, %{status: status, body: body} = env} when status in [200] ->
-        {:ok, %{env | body: body}}
+      {:ok, %{status: status} = env} when status in [200] ->
+        {:ok, env}
 
       {:ok, %{body: response}} ->
         {:error, response}
