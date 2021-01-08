@@ -22,6 +22,6 @@ defmodule Lexdee.Instances.Exec do
       |> Path.join()
 
     client
-    |> post(path, params, opts)
+    |> post(path, params, Keyword.delete(opts, :settings))
   end
 end
