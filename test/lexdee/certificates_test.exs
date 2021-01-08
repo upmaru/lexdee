@@ -27,7 +27,7 @@ defmodule Lexdee.CertificatesTest do
         |> Plug.Conn.resp(201, response)
       end)
 
-      assert {:ok, nil} =
+      assert {:ok, %{body: nil}} =
                Lexdee.create_certificate(client, %{
                  "password" => "something",
                  "certificate" => cert

@@ -1,0 +1,24 @@
+{
+  "type": "sync",
+  "status": "Success",
+  "status_code": 200,
+  "operation": "",
+  "error_code": 0,
+  "error": "",
+  "metadata": {
+    "id": "7af2382e-e3d3-42f9-afa8-50742757e686",
+    "class": "task",
+    "description": "Deleting container",
+    "created_at": "2021-01-08T14:03:41.679094295Z",
+    "updated_at": "2021-01-08T14:03:41.679094295Z",
+    "status": "Failure",
+    "status_code": 400,
+    "resources": {
+      "containers": ["/1.0/containers/test-0012"]
+    },
+    "metadata": null,
+    "may_cancel": false,
+    "err": "Error deleting storage volume: Failed to run: zfs destroy -r local/containers/test-0012: cannot destroy 'local/containers/test-0012': dataset is busy",
+    "location": "ubuntu-s-2vcpu-2gb-sgp1-01"
+  }
+}
