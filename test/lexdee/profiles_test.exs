@@ -22,7 +22,7 @@ defmodule Lexdee.ProfilesTest do
         |> Plug.Conn.resp(200, response)
       end)
 
-      assert {:ok, profiles} = Lexdee.list_profiles(client)
+      assert {:ok, %{body: profiles}} = Lexdee.list_profiles(client)
       assert Enum.count(profiles) == 2
     end
   end
@@ -43,7 +43,7 @@ defmodule Lexdee.ProfilesTest do
         |> Plug.Conn.resp(201, response)
       end)
 
-      assert {:ok, nil} =
+      assert {:ok, %{body: nil}} =
                Lexdee.create_profile(client, %{
                  "name" => "some-profile",
                  "description" => "description",

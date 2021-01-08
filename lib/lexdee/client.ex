@@ -31,7 +31,7 @@ defmodule Lexdee.Client do
   end
 
   defp get_adapter(cert, key) do
-    if Process.whereis(Mix.State) != nil && Mix.env() == :test do
+    if Application.get_env(:lexdee, :environment) == :test do
       {Tesla.Adapter.Mint, []}
     else
       {Tesla.Adapter.Mint,

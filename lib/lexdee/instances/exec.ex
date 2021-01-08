@@ -4,7 +4,7 @@ defmodule Lexdee.Instances.Exec do
 
   @path "/exec"
 
-  @spec perform(Testla.Client.t(), list(String.t()), Keyword.t()) ::
+  @spec perform(Tesla.Client.t(), list(String.t()), Keyword.t()) ::
           {:error, any} | {:ok, Tesla.Env.t()}
   def perform(client, id, command, opts \\ []) do
     settings = Keyword.get(opts, :settings, %{})

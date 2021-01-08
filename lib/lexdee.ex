@@ -51,6 +51,8 @@ defmodule Lexdee do
   defdelegate list_instances(client), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
 
+  defdelegate delete_instance(client, id), to: Instances, as: :remove
+
   defdelegate create_instance(client, params, opts \\ []),
     to: Instances,
     as: :create
