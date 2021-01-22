@@ -5,6 +5,12 @@ defmodule Lexdee.Profiles do
 
   def index(client), do: Tesla.get(client, @path)
 
+  def show(client, id),
+    do: get(client, Path.join(@path, id))
+
   def create(client, params, opts \\ []),
     do: post(client, @path, params, opts)
+
+  def update(client, id, params, opts \\ []),
+    do: patch(client, Path.join(@path, id), params, opts)
 end

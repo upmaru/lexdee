@@ -27,6 +27,47 @@ defmodule Lexdee.ProfilesTest do
     end
   end
 
+  describe "profile show" do
+    test "return success for profile show", %{
+      bypass: bypass,
+      client: client
+    } do
+      response =
+        File.read!("test/support/fixtures/responses/profiles/show.json")
+
+      Bypass.expect(bypass, "GET", "/1.0/profiles/some-profile", fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(200, response)
+      end)
+
+      assert {:ok, %{body: body}} = Lexdee.get_profile(client, "some-profile")
+    end
+  end
+
+  describe "update profile" do
+    test "return success for update profile", %{
+      bypass: bypass,
+      client: client
+    } do
+      response =
+        File.read!("test/support/fixtures/responses/profiles/update.json")
+
+      Bypass.expect(bypass, "PATCH", "/1.0/profiles/some-profile", fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(200, response)
+      end)
+
+      assert {:ok, %{body: body}} =
+               Lexdee.update_profile(client, "some-profile", %{
+                 "config" => %{
+                   "user.SOMETHING" => "blah4"
+                 }
+               })
+    end
+  end
+
   describe "create profile" do
     test "return success for create profile", %{
       bypass: bypass,
