@@ -35,7 +35,7 @@ defmodule Lexdee.InstancesTest do
         end
       )
 
-      assert {:ok, data} =
+      assert {:ok, _data} =
                Lexdee.create_instance(
                  client,
                  %{
@@ -80,7 +80,7 @@ defmodule Lexdee.InstancesTest do
         end
       )
 
-      assert {:ok, data} = Lexdee.delete_instance(client, "test-0012")
+      assert {:ok, _data} = Lexdee.delete_instance(client, "test-0012")
     end
   end
 end

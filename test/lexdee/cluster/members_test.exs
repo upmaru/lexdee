@@ -23,7 +23,7 @@ defmodule Lexdee.Cluster.MembersTest do
         |> Plug.Conn.resp(200, response)
       end)
 
-      assert {:ok, data} = Lexdee.get_cluster_member(client, "test-01")
+      assert {:ok, _data} = Lexdee.get_cluster_member(client, "test-01")
     end
   end
 end

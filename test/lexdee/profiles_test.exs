@@ -41,7 +41,7 @@ defmodule Lexdee.ProfilesTest do
         |> Plug.Conn.resp(200, response)
       end)
 
-      assert {:ok, %{body: body}} = Lexdee.get_profile(client, "some-profile")
+      assert {:ok, %{body: _body}} = Lexdee.get_profile(client, "some-profile")
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Lexdee.ProfilesTest do
         |> Plug.Conn.resp(200, response)
       end)
 
-      assert {:ok, %{body: body}} =
+      assert {:ok, %{body: _body}} =
                Lexdee.update_profile(client, "some-profile", %{
                  "config" => %{
                    "user.SOMETHING" => "blah4"

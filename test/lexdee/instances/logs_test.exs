@@ -41,7 +41,7 @@ defmodule Lexdee.Instances.LogsTest do
         end
       )
 
-      assert {:ok, log_data} = Lexdee.show_instance_log(client, id, file_name)
+      assert {:ok, _log_data} = Lexdee.show_instance_log(client, id, file_name)
     end
   end
 end
