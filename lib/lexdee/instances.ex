@@ -6,8 +6,8 @@ defmodule Lexdee.Instances do
   @spec base_path :: binary()
   def base_path, do: @path
 
-  @spec index(Tesla.Client.t()) :: {:error, any} | {:ok, Tesla.Env.t()}
-  def index(client), do: Tesla.get(client, @path)
+  @spec index(Tesla.Client.t(), Keyword.t()) :: {:error, any} | {:ok, Tesla.Env.t()}
+  def index(client, options \\ []), do: Tesla.get(client, @path, options)
 
   @spec show(Tesla.Client.t(), binary()) :: {:error, any} | {:ok, Tesla.Env.t()}
   def show(client, id), do: Tesla.get(client, id)

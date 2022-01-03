@@ -48,7 +48,7 @@ defmodule Lexdee do
     to: Instances.Exec,
     as: :perform
 
-  defdelegate list_instances(client), to: Instances, as: :index
+  defdelegate list_instances(client, options \\ []), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
 
   defdelegate create_instance(client, params, opts \\ []),
