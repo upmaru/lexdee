@@ -29,7 +29,7 @@ defmodule Lexdee.Instances.StateTest do
         |> Plug.Conn.resp(202, response)
       end)
 
-      assert {:ok, response} = Lexdee.start_instance(client, id)
+      assert {:ok, _response} = Lexdee.start_instance(client, id)
     end
   end
 end

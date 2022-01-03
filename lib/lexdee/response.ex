@@ -5,9 +5,12 @@ defmodule Lexdee.Response do
     env
     |> Tesla.run(next)
     |> case do
-      {:ok, %{status: status, body: %{"metadata" => response}}}
+      {:ok, %{status: status, body: %{"metadata" => response}} = env}
       when status in [200, 201, 202] ->
-        {:ok, response}
+        {:ok, %{env | body: response}}
+
+      {:ok, %{status: status} = env} when status in [200] ->
+        {:ok, env}
 
       {:ok, %{body: response}} ->
         {:error, response}

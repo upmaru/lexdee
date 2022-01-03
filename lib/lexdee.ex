@@ -21,6 +21,8 @@ defmodule Lexdee do
   alias Lexdee.Profiles
 
   defdelegate list_profiles(client), to: Profiles, as: :index
+  defdelegate get_profile(client, id), to: Profiles, as: :show
+  defdelegate update_profile(client, id, params), to: Profiles, as: :update
   defdelegate create_profile(client, params), to: Profiles, as: :create
 
   alias Lexdee.Certificates
@@ -51,9 +53,15 @@ defmodule Lexdee do
   defdelegate list_instances(client, options \\ []), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
 
+  defdelegate delete_instance(client, id), to: Instances, as: :remove
+
   defdelegate create_instance(client, params, opts \\ []),
     to: Instances,
     as: :create
+
+  defdelegate show_instance_log(client, instance, file_name, opts \\ []),
+    to: Instances.Logs,
+    as: :show
 
   defdelegate get_state(client, id), to: Instances.State, as: :show
 

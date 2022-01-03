@@ -24,7 +24,7 @@ defmodule Lexdee.Instances.ExecTest do
         |> Plug.Conn.resp(202, response)
       end)
 
-      assert {:ok, data} = Lexdee.execute_command(client, id, ["echo 'blah'"])
+      assert {:ok, _data} = Lexdee.execute_command(client, id, ["echo 'blah'"])
     end
   end
 end

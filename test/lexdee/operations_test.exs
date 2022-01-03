@@ -29,7 +29,7 @@ defmodule Lexdee.OperationsTest do
         end
       )
 
-      assert {:ok, result} =
+      assert {:ok, _result} =
                Lexdee.wait_for_operation(client, id, query: [timeout: 60])
     end
   end
