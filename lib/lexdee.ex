@@ -88,4 +88,10 @@ defmodule Lexdee do
   defdelegate wait_for_operation(client, id, options \\ []),
     to: Operations,
     as: :wait
+
+  alias Lexdee.Networks
+
+  defdelegate list_network_leases(client, id, options \\ []),
+    to: Networks.Leases,
+    as: :list
 end
