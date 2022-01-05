@@ -91,7 +91,11 @@ defmodule Lexdee do
 
   alias Lexdee.Networks
 
+  defdelegate list_networks(client, options \\ []),
+    to: Networks,
+    as: :index
+
   defdelegate list_network_leases(client, id, options \\ []),
     to: Networks.Leases,
-    as: :list
+    as: :index
 end
