@@ -26,7 +26,9 @@ defmodule Lexdee.Networks.LeasesTest do
         |> Plug.Conn.resp(200, response)
       end)
 
-      assert {:ok, %{body: body}} = Lexdee.list_network_leases(client, "lxdfan0")
+      assert {:ok, %{body: body}} =
+               Lexdee.list_network_leases(client, "lxdfan0")
+
       assert Enum.count(body) == 2
     end
   end
