@@ -20,7 +20,7 @@ defmodule Lexdee do
 
   alias Lexdee.Profiles
 
-  defdelegate list_profiles(client), to: Profiles, as: :index
+  defdelegate list_profiles(client, opts \\ []), to: Profiles, as: :index
   defdelegate get_profile(client, id), to: Profiles, as: :show
   defdelegate update_profile(client, id, params), to: Profiles, as: :update
   defdelegate create_profile(client, params), to: Profiles, as: :create
@@ -50,7 +50,7 @@ defmodule Lexdee do
     to: Instances.Exec,
     as: :perform
 
-  defdelegate list_instances(client), to: Instances, as: :index
+  defdelegate list_instances(client, options \\ []), to: Instances, as: :index
   defdelegate get_instance(client, id), to: Instances, as: :show
 
   defdelegate delete_instance(client, id), to: Instances, as: :remove
@@ -88,4 +88,14 @@ defmodule Lexdee do
   defdelegate wait_for_operation(client, id, options \\ []),
     to: Operations,
     as: :wait
+
+  alias Lexdee.Networks
+
+  defdelegate list_networks(client, options \\ []),
+    to: Networks,
+    as: :index
+
+  defdelegate list_network_leases(client, id, options \\ []),
+    to: Networks.Leases,
+    as: :index
 end

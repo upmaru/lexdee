@@ -3,7 +3,7 @@ defmodule Lexdee.Profiles do
 
   @path "/1.0/profiles"
 
-  def index(client), do: Tesla.get(client, @path)
+  def index(client, options \\ []), do: Tesla.get(client, @path, options)
 
   def show(client, id),
     do: get(client, Path.join(@path, id))

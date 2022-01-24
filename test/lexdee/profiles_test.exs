@@ -25,6 +25,29 @@ defmodule Lexdee.ProfilesTest do
       assert {:ok, %{body: profiles}} = Lexdee.list_profiles(client)
       assert Enum.count(profiles) == 2
     end
+
+    test "return success for list of profiles with recursive", %{
+      bypass: bypass,
+      client: client
+    } do
+      response =
+        File.read!(
+          "test/support/fixtures/responses/profiles/index_recursive_one.json"
+        )
+
+      Bypass.expect(bypass, "GET", "/1.0/profiles", fn conn ->
+        assert %{"recursive" => "1"} = conn.query_params
+
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(200, response)
+      end)
+
+      assert {:ok, %{body: profiles}} =
+               Lexdee.list_profiles(client, query: [recursive: 1])
+
+      assert Enum.count(profiles) == 3
+    end
   end
 
   describe "profile show" do
