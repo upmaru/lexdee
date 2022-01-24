@@ -20,7 +20,7 @@ defmodule Lexdee do
 
   alias Lexdee.Profiles
 
-  defdelegate list_profiles(client), to: Profiles, as: :index
+  defdelegate list_profiles(client, opts \\ []), to: Profiles, as: :index
   defdelegate get_profile(client, id), to: Profiles, as: :show
   defdelegate update_profile(client, id, params), to: Profiles, as: :update
   defdelegate create_profile(client, params), to: Profiles, as: :create
