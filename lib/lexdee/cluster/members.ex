@@ -3,6 +3,6 @@ defmodule Lexdee.Cluster.Members do
 
   use Lexdee.Utils
 
-  def index(client), do: Tesla.get(client, @path)
+  def index(client, options \\ []), do: Tesla.get(client, @path, options)
   def show(client, id), do: Tesla.get(client, get_id(id))
 end
