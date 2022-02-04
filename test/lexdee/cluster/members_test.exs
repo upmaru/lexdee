@@ -1,11 +1,11 @@
 defmodule Lexdee.Cluster.MembersTest do
   use ExUnit.Case
 
-  describe "index recursive 1" do
+  describe "index recursion 1" do
     setup do
       response =
         File.read!(
-          "test/support/fixtures/responses/cluster/member/index_recursive_one.json"
+          "test/support/fixtures/responses/cluster/member/index_recursion_one.json"
         )
 
       bypass = Bypass.open()
