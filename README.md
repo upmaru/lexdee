@@ -10,7 +10,7 @@ by adding `lexdee` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:lexdee, "~> 0.1.0"}
+    {:lexdee, "~> 1.0.0"}
   ]
 end
 ```
