@@ -45,7 +45,8 @@ defmodule Lexdee.MixProject do
 
       # HTTP Adapter
       {:castore, "~> 0.1.0"},
-      {:mint, "~> 1.0"},
+      {:mint, "~> 1.4"},
+      {:mint_web_socket, "~> 1.0.2"},
 
       # Certificate Management
       {:x509, "~> 0.8.1"},
