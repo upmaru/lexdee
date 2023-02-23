@@ -1,0 +1,15 @@
+{
+   "location":"upmaru-stage-02",
+   "metadata":{
+      "action":"instance-started",
+      "requestor":{
+         "address":"@",
+         "protocol":"unix",
+         "username":"root"
+      },
+      "source":"/1.0/instances/rdio-staging-web-03"
+   },
+   "project":"default",
+   "timestamp":"2023-02-23T08:40:19.058523179Z",
+   "type":"lifecycle"
+}

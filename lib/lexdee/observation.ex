@@ -1,16 +1,16 @@
 defmodule Lexdee.Observation do
-  defstruct [:type, :resource, :event]
+  defstruct [:type, :reference, :event]
 
   @type t :: %__MODULE__{
           type: String.t(),
-          resource: map(),
+          reference: map(),
           event: struct()
         }
 
-  def new(params, resource) do
+  def new(params, reference) do
     %__MODULE__{
       type: params["type"],
-      resource: resource,
+      reference: reference,
       event: build_event(params)
     }
   end
@@ -53,6 +53,17 @@ defmodule Lexdee.Observation do
       end)
 
     struct(Lexdee.Operation, metadata)
+  end
+
+  defp build_object(%{"type" => "lifecycle", "metadata" => metadata})
+       when is_map(metadata) do
+    metadata =
+      metadata
+      |> Enum.map(fn {key, value} ->
+        {String.to_atom(key), value}
+      end)
+
+    struct(Lexdee.Lifecycle, metadata)
   end
 
   defp parse_metadata(metadata, "websocket") do
