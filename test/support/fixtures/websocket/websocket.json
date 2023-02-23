@@ -1,0 +1,44 @@
+{
+   "location":"upmaru-stage-01",
+   "metadata":{
+      "class":"websocket",
+      "created_at":"2023-02-23T06:47:59.691599889Z",
+      "description":"Executing command",
+      "err":"",
+      "id":"1d0a4fe4-4888-4f2d-be58-d3a29fea828d",
+      "location":"upmaru-stage-01",
+      "may_cancel":false,
+      "metadata":{
+         "command":[
+            "ash"
+         ],
+         "environment":{
+            "HOME":"/root",
+            "LANG":"C.UTF-8",
+            "PATH":"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "TERM":"xterm-256color",
+            "USER":"root"
+         },
+         "fds":{
+            "0":"cf724e1b5f13f252d74f00ad1f4eb4643f26bfd7db9d73fd3fb42f81a4a87d86",
+            "control":"8dc0e1558037ede8fb5979e7c39544687a505552d5d9de2dd00a73225434cc14"
+         },
+         "interactive":true,
+         "return":0
+      },
+      "resources":{
+         "containers":[
+            "/1.0/containers/rdio-staging-web-01"
+         ],
+         "instances":[
+            "/1.0/instances/rdio-staging-web-01"
+         ]
+      },
+      "status":"Success",
+      "status_code":200,
+      "updated_at":"2023-02-23T07:28:46.605532783Z"
+   },
+   "project":"default",
+   "timestamp":"2023-02-23T07:28:46.605709139Z",
+   "type":"operation"
+}

@@ -1,0 +1,24 @@
+{
+   "location":"upmaru-stage-02",
+   "metadata":{
+      "class":"task",
+      "created_at":"2023-02-23T07:28:59.822027526Z",
+      "description":"Stopping instance",
+      "err":"",
+      "id":"9cf83bda-84b4-4f68-b1b8-7a07433b5793",
+      "location":"upmaru-stage-02",
+      "may_cancel":false,
+      "metadata":null,
+      "resources":{
+         "instances":[
+            "/1.0/instances/rdio-staging-web-03"
+         ]
+      },
+      "status":"Success",
+      "status_code":200,
+      "updated_at":"2023-02-23T07:28:59.822027526Z"
+   },
+   "project":"default",
+   "timestamp":"2023-02-23T07:29:04.940745722Z",
+   "type":"operation"
+}
