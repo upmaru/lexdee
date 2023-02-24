@@ -67,6 +67,10 @@ defmodule Lexdee.Observer do
   end
 
   @impl true
+  def handle_call(:state, _from, state) do
+    {:reply, state, state}
+  end
+  
   def handle_call(:connect, from, state) do
     uri = URI.parse(state.url)
 
@@ -224,9 +228,7 @@ defmodule Lexdee.Observer do
   defp handle_frames(state, frames) do
     Enum.reduce(frames, state, fn
       # reply to pings with pongs
-      {:ping, data}, state ->
-        state.resource
-
+      {:ping, data}, state ->        
         %{"type" => "ping", "state" => data}
         |> Observation.new(state.resource)
         |> state.handler.handle_event()

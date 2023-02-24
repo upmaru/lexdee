@@ -30,15 +30,15 @@ defmodule Lexdee.ObserverTest do
   end
   
   describe "ping" do
-    test "ping", %{url: url, client: client} do
+    test "can receive ping", %{url: url, client: client} do
       defmodule PingHandler do
         def handle_event(%Lexdee.Observation{type: "ping"} = observation) do        
+          IO.inspect(observation)
+        
           assert observation.event.object.body == "keepalive"
         end
         
-        def handle_event(observation) do      
-          IO.inspect(observation)
-              
+        def handle_event(observation) do              
           :ok
         end
       end
@@ -50,8 +50,14 @@ defmodule Lexdee.ObserverTest do
                  client: client,
                  handler: PingHandler
                )
-                             
-      send(pid, "soemthing")
+               
+      state = GenServer.call(pid, :state)
+      
+      {:ok, websocket, data} = Mint.WebSocket.encode(state.websocket, {:ping, "keepalive"})
+      
+      {:ok, conn} = Mint.WebSocket.stream_request_body(state.conn, state.request_ref, data)
+      
+      # TODO test this properly
     end
   end
 end
