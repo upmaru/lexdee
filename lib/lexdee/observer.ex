@@ -35,7 +35,7 @@ defmodule Lexdee.Observer do
         Application.get_env(:lexdee, __MODULE__, :handler)
 
     client = Keyword.fetch!(opts, :client)
-    resource = Keyword.fetch!(opts, :resource)
+    resource = Keyword.get(opts, :resource)
     type = Keyword.get(opts, :type, "operation")
 
     %{adapter: {_, _, options}, pre: middlewares} = client
@@ -48,7 +48,8 @@ defmodule Lexdee.Observer do
     base_uri = URI.parse(base_url)
 
     websocket_url =
-      "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
+      Keyword.get(opts, :url) ||
+        "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
 
     options =
       options
