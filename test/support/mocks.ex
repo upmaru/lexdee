@@ -79,6 +79,11 @@ defmodule TestSocket do
     send(state.pid, to_string(msg))
     handle_websocket_message(msg, state)
   end
+  
+  def websocket_handle({:ping, msg}, state) do  
+    send(state.pid, to_string(msg))
+    handle_websocket_message(msg, state)
+  end
 
   @impl :cowboy_websocket
   def websocket_info(:close, state), do: {:reply, :close, state}
@@ -89,18 +94,6 @@ defmodule TestSocket do
 
   def websocket_info({:send, frame}, state) do
     {:reply, frame, state}
-  end
-
-  # Hardcode commonly used expected frames and responses here
-  # (This is just a convenience if you want to avoid having to respond to common frames from the test code)
-  defp handle_websocket_message("{\"initiate_payment\": true}", state) do
-    {:reply, {:text, Jason.encode!(%{payment_methods: ~w[credit_card apple]a})},
-     state}
-  end
-
-  defp handle_websocket_message("another expected frame" <> _rest, state) do
-    # no reply
-    {:ok, state}
   end
 
   defp handle_websocket_message(_other, state), do: {:ok, state}
