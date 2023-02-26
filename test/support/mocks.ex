@@ -79,8 +79,8 @@ defmodule TestSocket do
     send(state.pid, to_string(msg))
     handle_websocket_message(msg, state)
   end
-  
-  def websocket_handle({:ping, msg}, state) do  
+
+  def websocket_handle({:pong, msg}, state) do
     send(state.pid, to_string(msg))
     handle_websocket_message(msg, state)
   end
