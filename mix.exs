@@ -4,8 +4,9 @@ defmodule Lexdee.MixProject do
   def project do
     [
       app: :lexdee,
-      version: "1.0.6",
+      version: "2.0.0",
       elixir: "~> 1.9",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       package: package(),
       description: description(),
@@ -36,6 +37,9 @@ defmodule Lexdee.MixProject do
     ]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
@@ -52,6 +56,7 @@ defmodule Lexdee.MixProject do
       {:x509, "~> 0.8.1"},
 
       # SDK
+      {:plug_cowboy, "~> 2.0", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:bypass, "~> 2.0", only: :test},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
