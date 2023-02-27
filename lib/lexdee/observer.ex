@@ -4,9 +4,12 @@ defmodule Lexdee.Observer do
   require Logger
   require Mint.HTTP
 
+  alias Lexdee.Observation
+
   defstruct [
     :conn,
     :base_uri,
+    :resource,
     :url,
     :handler,
     :websocket,
@@ -27,8 +30,12 @@ defmodule Lexdee.Observer do
 
   @impl true
   def init(opts) do
+    handler =
+      Keyword.get(opts, :handler) ||
+        Application.get_env(:lexdee, __MODULE__, :handler)
+
     client = Keyword.fetch!(opts, :client)
-    handler = Keyword.fetch!(opts, :handler)
+    resource = Keyword.get(opts, :resource)
     type = Keyword.get(opts, :type, "operation")
 
     %{adapter: {_, _, options}, pre: middlewares} = client
@@ -41,15 +48,22 @@ defmodule Lexdee.Observer do
     base_uri = URI.parse(base_url)
 
     websocket_url =
-      "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
+      Keyword.get(opts, :url) ||
+        "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
 
     options =
       options
       |> List.flatten()
       |> Keyword.put(:protocols, [:http1])
 
-    {:ok,
-     %__MODULE__{client_options: options, handler: handler, url: websocket_url}}
+    state = %__MODULE__{
+      resource: resource,
+      client_options: options,
+      handler: handler,
+      url: websocket_url
+    }
+
+    {:ok, state}
   end
 
   @impl true
@@ -83,6 +97,14 @@ defmodule Lexdee.Observer do
            ),
          {:ok, conn, ref} <- Mint.WebSocket.upgrade(ws_scheme, conn, path, []) do
       state = %{state | conn: conn, request_ref: ref, caller: from}
+
+      %{
+        "type" => "connection",
+        "state" => "connecting"
+      }
+      |> Observation.new(state.resource)
+      |> state.handler.handle_event()
+
       {:noreply, state}
     else
       {:error, reason} ->
@@ -134,6 +156,13 @@ defmodule Lexdee.Observer do
   defp handle_responses(%{request_ref: ref} = state, [{:done, ref} | rest]) do
     case Mint.WebSocket.new(state.conn, ref, state.status, state.resp_headers) do
       {:ok, conn, websocket} ->
+        %{
+          "type" => "connection",
+          "state" => "connected"
+        }
+        |> Observation.new(state.resource)
+        |> state.handler.handle_event()
+
         %{
           state
           | conn: conn,
@@ -196,8 +225,11 @@ defmodule Lexdee.Observer do
     Enum.reduce(frames, state, fn
       # reply to pings with pongs
       {:ping, data}, state ->
-        state.handler.handle_event(%{"type" => "ping", "metadata" => data})
-        {:ok, state} = send_frame(state, {:pong, data})
+        %{"type" => "ping", "state" => data}
+        |> Observation.new(state.resource)
+        |> state.handler.handle_event()
+
+        {:ok, state} = send_frame(state, {:pong, "ok"})
         state
 
       {:close, _code, reason}, state ->
@@ -205,7 +237,12 @@ defmodule Lexdee.Observer do
         %{state | closing?: true}
 
       {:text, text}, state ->
-        state.handler.handle_event(Jason.decode!(text))
+        text
+        |> Jason.decode!()
+        |> Observation.new(state.resource)
+        |> state.handler.handle_event()
+
+        {:ok, state} = send_frame(state, {:pong, "ok"})
         state
 
       frame, state ->
