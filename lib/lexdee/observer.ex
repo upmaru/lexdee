@@ -32,7 +32,7 @@ defmodule Lexdee.Observer do
   def init(opts) do
     handler =
       Keyword.get(opts, :handler) ||
-        Application.get_env(:lexdee, __MODULE__, :handler)
+        Keyword.get(Application.get_env(:lexdee, __MODULE__), :handler)
 
     client = Keyword.fetch!(opts, :client)
     resource = Keyword.get(opts, :resource)
