@@ -1,7 +1,8 @@
 defmodule Lexdee.Observation do
-  defstruct [:type, :reference, :event]
+  defstruct [:feed, :type, :reference, :event]
 
   @type t :: %__MODULE__{
+          feed: String.t(),
           type: String.t(),
           reference: map(),
           event: struct()
@@ -9,6 +10,7 @@ defmodule Lexdee.Observation do
 
   def new(params, reference) do
     %__MODULE__{
+      feed: params["feed"],
       type: params["type"],
       reference: reference,
       event: build_event(params)
