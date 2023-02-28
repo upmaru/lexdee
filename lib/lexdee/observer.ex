@@ -6,6 +6,8 @@ defmodule Lexdee.Observer do
 
   alias Lexdee.Observation
 
+  @task Application.compile_env(:lexdee, :task) || Task
+
   defstruct [
     :conn,
     :feed,
@@ -92,7 +94,7 @@ defmodule Lexdee.Observer do
         query -> uri.path <> "?" <> query
       end
 
-    Task.async(fn ->
+    @task.async(fn ->
       %{
         "feed" => state.feed,
         "type" => "connection",
@@ -114,7 +116,7 @@ defmodule Lexdee.Observer do
       {:noreply, state}
     else
       {:error, %Mint.TransportError{reason: :econnrefused} = reason} ->
-        Task.async(fn ->
+        @task.async(fn ->
           %{
             "feed" => state.feed,
             "type" => "connection",
@@ -183,7 +185,7 @@ defmodule Lexdee.Observer do
   defp handle_responses(%{request_ref: ref} = state, [{:done, ref} | rest]) do
     case Mint.WebSocket.new(state.conn, ref, state.status, state.resp_headers) do
       {:ok, conn, websocket} ->
-        Task.async(fn ->
+        @task.async(fn ->
           %{
             "feed" => state.feed,
             "type" => "connection",
@@ -255,7 +257,7 @@ defmodule Lexdee.Observer do
     Enum.reduce(frames, state, fn
       # reply to pings with pongs
       {:ping, data}, state ->
-        Task.async(fn ->
+        @task.async(fn ->
           %{"feed" => state.feed, "type" => "ping", "state" => data}
           |> Observation.new(state.resource)
           |> state.handler.handle_event()
@@ -269,7 +271,7 @@ defmodule Lexdee.Observer do
         %{state | closing?: true}
 
       {:text, text}, state ->
-        Task.async(fn ->
+        @task.async(fn ->
           text
           |> Jason.decode!()
           |> Map.merge(%{"feed" => state.feed})

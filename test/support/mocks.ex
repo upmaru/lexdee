@@ -98,3 +98,9 @@ defmodule TestSocket do
 
   defp handle_websocket_message(_other, state), do: {:ok, state}
 end
+
+defmodule Lexdee.TaskMock do
+  def async(fun) do
+    fun.()
+  end
+end
