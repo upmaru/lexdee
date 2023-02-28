@@ -88,6 +88,13 @@ defmodule Lexdee.Observer do
         query -> uri.path <> "?" <> query
       end
 
+    %{
+      "type" => "connection",
+      "state" => "connecting"
+    }
+    |> Observation.new(state.resource)
+    |> state.handler.handle_event()
+
     with {:ok, conn} <-
            Mint.HTTP.connect(
              http_scheme,
@@ -97,16 +104,18 @@ defmodule Lexdee.Observer do
            ),
          {:ok, conn, ref} <- Mint.WebSocket.upgrade(ws_scheme, conn, path, []) do
       state = %{state | conn: conn, request_ref: ref, caller: from}
-
-      %{
-        "type" => "connection",
-        "state" => "connecting"
-      }
-      |> Observation.new(state.resource)
-      |> state.handler.handle_event()
-
       {:noreply, state}
     else
+      {:error, %Mint.TransportError{reason: :econnrefused} = reason} ->
+        %{
+          "type" => "connection",
+          "state" => "failed"
+        }
+        |> Observation.new(state.resource)
+        |> state.handler.handle_event()
+
+        {:reply, {:error, reason}, state}
+
       {:error, reason} ->
         {:reply, {:error, reason}, state}
 
