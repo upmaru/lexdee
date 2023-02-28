@@ -6,8 +6,11 @@ defmodule Lexdee.Observer do
 
   alias Lexdee.Observation
 
+  @task Application.compile_env(:lexdee, :task) || Task
+
   defstruct [
     :conn,
+    :feed,
     :base_uri,
     :resource,
     :url,
@@ -22,7 +25,9 @@ defmodule Lexdee.Observer do
   ]
 
   def start_link(options) do
-    with {:ok, pid} <- GenServer.start_link(__MODULE__, options),
+    name = Keyword.get(options, :name)
+
+    with {:ok, pid} <- GenServer.start_link(__MODULE__, options, name: name),
          {:ok, :connected} <- GenServer.call(pid, :connect) do
       {:ok, pid}
     end
@@ -60,7 +65,8 @@ defmodule Lexdee.Observer do
       resource: resource,
       client_options: options,
       handler: handler,
-      url: websocket_url
+      url: websocket_url,
+      feed: type
     }
 
     {:ok, state}
@@ -88,6 +94,16 @@ defmodule Lexdee.Observer do
         query -> uri.path <> "?" <> query
       end
 
+    @task.async(fn ->
+      %{
+        "feed" => state.feed,
+        "type" => "connection",
+        "state" => "connecting"
+      }
+      |> Observation.new(state.resource)
+      |> state.handler.handle_event()
+    end)
+
     with {:ok, conn} <-
            Mint.HTTP.connect(
              http_scheme,
@@ -97,16 +113,21 @@ defmodule Lexdee.Observer do
            ),
          {:ok, conn, ref} <- Mint.WebSocket.upgrade(ws_scheme, conn, path, []) do
       state = %{state | conn: conn, request_ref: ref, caller: from}
-
-      %{
-        "type" => "connection",
-        "state" => "connecting"
-      }
-      |> Observation.new(state.resource)
-      |> state.handler.handle_event()
-
       {:noreply, state}
     else
+      {:error, %Mint.TransportError{reason: :econnrefused} = reason} ->
+        @task.async(fn ->
+          %{
+            "feed" => state.feed,
+            "type" => "connection",
+            "state" => "failed"
+          }
+          |> Observation.new(state.resource)
+          |> state.handler.handle_event()
+        end)
+
+        {:reply, {:error, reason}, state}
+
       {:error, reason} ->
         {:reply, {:error, reason}, state}
 
@@ -116,6 +137,14 @@ defmodule Lexdee.Observer do
   end
 
   @impl true
+  def handle_info({ref, _}, state) when is_reference(ref) do
+    {:noreply, state}
+  end
+
+  def handle_info({:DOWN, _ref, :process, _pid, :normal}, state) do
+    {:noreply, state}
+  end
+
   def handle_info(message, state) do
     case Mint.WebSocket.stream(state.conn, message) do
       {:ok, conn, responses} ->
@@ -156,12 +185,15 @@ defmodule Lexdee.Observer do
   defp handle_responses(%{request_ref: ref} = state, [{:done, ref} | rest]) do
     case Mint.WebSocket.new(state.conn, ref, state.status, state.resp_headers) do
       {:ok, conn, websocket} ->
-        %{
-          "type" => "connection",
-          "state" => "connected"
-        }
-        |> Observation.new(state.resource)
-        |> state.handler.handle_event()
+        @task.async(fn ->
+          %{
+            "feed" => state.feed,
+            "type" => "connection",
+            "state" => "connected"
+          }
+          |> Observation.new(state.resource)
+          |> state.handler.handle_event()
+        end)
 
         %{
           state
@@ -225,9 +257,11 @@ defmodule Lexdee.Observer do
     Enum.reduce(frames, state, fn
       # reply to pings with pongs
       {:ping, data}, state ->
-        %{"type" => "ping", "state" => data}
-        |> Observation.new(state.resource)
-        |> state.handler.handle_event()
+        @task.async(fn ->
+          %{"feed" => state.feed, "type" => "ping", "state" => data}
+          |> Observation.new(state.resource)
+          |> state.handler.handle_event()
+        end)
 
         {:ok, state} = send_frame(state, {:pong, "ok"})
         state
@@ -237,10 +271,13 @@ defmodule Lexdee.Observer do
         %{state | closing?: true}
 
       {:text, text}, state ->
-        text
-        |> Jason.decode!()
-        |> Observation.new(state.resource)
-        |> state.handler.handle_event()
+        @task.async(fn ->
+          text
+          |> Jason.decode!()
+          |> Map.merge(%{"feed" => state.feed})
+          |> Observation.new(state.resource)
+          |> state.handler.handle_event()
+        end)
 
         {:ok, state} = send_frame(state, {:pong, "ok"})
         state
