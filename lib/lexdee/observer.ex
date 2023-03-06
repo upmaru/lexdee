@@ -12,6 +12,7 @@ defmodule Lexdee.Observer do
     :conn,
     :feed,
     :base_uri,
+    :parent,
     :resource,
     :url,
     :handler,
@@ -36,6 +37,8 @@ defmodule Lexdee.Observer do
 
   @impl true
   def init(opts) do
+    parent = Keyword.get(opts, :parent)
+
     handler =
       Keyword.get(opts, :handler) ||
         Keyword.get(Application.get_env(:lexdee, __MODULE__), :handler)
@@ -70,7 +73,7 @@ defmodule Lexdee.Observer do
       handler: handler,
       url: websocket_url,
       feed: type,
-      last_pinged_at: Keyword.get(opts, :last_pinged_at)
+      parent: parent
     }
 
     {:ok, state}
@@ -144,27 +147,35 @@ defmodule Lexdee.Observer do
   def handle_info(:check_connectivity, state) do
     timestamp = DateTime.to_unix(DateTime.utc_now())
 
-    if state.last_pinged_at && timestamp - state.last_pinged_at > 11 do
-      @task.async(fn ->
-        %{
-          "feed" => state.feed,
-          "type" => "connection",
-          "state" => "disconnected",
-          "metadata" => %{
-            "last_pinged_at" => state.last_pinged_at,
-            "checked_at" => timestamp
+    case send_frame(state, {:pong, "ok"}) do
+      {:ok, state} ->
+        Process.send_after(self(), :check_connectivity, 15_000)
+
+        {:noreply, state}
+
+      {:error, state, _reason} ->
+        @task.async(fn ->
+          %{
+            "feed" => state.feed,
+            "type" => "connection",
+            "state" => "disconnected",
+            "metadata" => %{
+              "last_pinged_at" => state.last_pinged_at,
+              "checked_at" => timestamp
+            }
           }
-        }
-        |> Observation.new(state.resource)
-        |> state.handler.handle_event()
-      end)
+          |> Observation.new(state.resource)
+          |> state.handler.handle_event()
+        end)
+
+        do_close(state)
+
+        if state.parent do
+          send(state.parent, :closed)
+        end
+
+        {:noreply, state}
     end
-
-    send_frame(state, {:pong, "ok"})
-
-    Process.send_after(self(), :check_connectivity, 15_000)
-
-    {:noreply, state}
   end
 
   def handle_info({ref, _}, state) when is_reference(ref) do
