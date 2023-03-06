@@ -54,6 +54,19 @@ defmodule Lexdee.ObserverTest do
 
       assert_receive "ok"
     end
+
+    test "no disconnection", %{url: url, client: client} do
+      assert {:ok, pid} =
+               Lexdee.Observer.start_link(
+                 url: url,
+                 client: client,
+                 handler: PingHandler
+               )
+
+      send(pid, :check_connectivity)
+
+      assert_receive "ok"
+    end
   end
 
   describe "check connectivity" do
