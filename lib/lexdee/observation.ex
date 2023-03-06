@@ -33,6 +33,10 @@ defmodule Lexdee.Observation do
     }
   end
 
+  defp build_object(%{"state" => "disconnected", "metadata" => metadata}) do
+    %Lexdee.Message{body: "disconnected", metadata: metadata}
+  end
+
   defp build_object(%{"state" => message})
        when is_binary(message),
        do: %Lexdee.Message{body: message}

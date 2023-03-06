@@ -54,6 +54,56 @@ defmodule Lexdee.ObserverTest do
 
       assert_receive "ok"
     end
+
+    test "no disconnection", %{url: url, client: client} do
+      assert {:ok, pid} =
+               Lexdee.Observer.start_link(
+                 url: url,
+                 client: client,
+                 handler: PingHandler
+               )
+
+      send(pid, :check_connectivity)
+
+      assert_receive "ok"
+    end
+  end
+
+  describe "check connectivity" do
+    defmodule ConnectivityHandler do
+      def handle_event(%Lexdee.Observation{type: "connection"} = observation) do
+        assert observation.event.object.body in [
+                 "connected",
+                 "connecting",
+                 "disconnected"
+               ]
+
+        if observation.event.object.body == "disconnected" do
+          assert %{"last_pinged_at" => _timestamp} =
+                   observation.event.object.metadata
+        end
+      end
+
+      def handle_event(%Lexdee.Observation{type: "ping"} = observation) do
+        assert observation.event.object.body == "keepalive"
+      end
+    end
+
+    test "can receive ping", %{url: url, client: client} do
+      timestamp = DateTime.add(DateTime.utc_now(), -12)
+
+      assert {:ok, pid} =
+               Lexdee.Observer.start_link(
+                 url: url,
+                 client: client,
+                 handler: ConnectivityHandler,
+                 last_pinged_at: DateTime.to_unix(timestamp)
+               )
+
+      send(pid, :check_connectivity)
+
+      assert_receive "ok"
+    end
   end
 
   describe "text" do
