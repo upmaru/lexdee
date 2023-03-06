@@ -154,6 +154,12 @@ defmodule Lexdee.Observer do
         {:noreply, state}
 
       {:error, state, _reason} ->
+        if state.resource do
+          Logger.info(
+            "[Lexdee.Observer] #{state.resource.type} #{state.resource.id} disconnected"
+          )
+        end
+
         @task.async(fn ->
           %{
             "feed" => state.feed,
@@ -168,11 +174,11 @@ defmodule Lexdee.Observer do
           |> state.handler.handle_event()
         end)
 
-        do_close(state)
-
         if state.parent do
           send(state.parent, :closed)
         end
+
+        do_close(state)
 
         {:noreply, state}
     end
