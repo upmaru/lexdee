@@ -144,7 +144,13 @@ defmodule Lexdee.Observer do
   end
 
   @impl true
-  def handle_info(:check_connectivity, state) do
+  def handle_info(:check_connectivity, %{conn: nil} = state) do
+    Process.send_after(self(), :check_connectivity, 15_000)
+
+    {:noreply, state}
+  end
+
+  def handle_info(:check_connectivity, %{conn: _conn} = state) do
     timestamp = DateTime.to_unix(DateTime.utc_now())
 
     case send_frame(state, {:pong, "ok"}) do
