@@ -21,7 +21,8 @@ defmodule Lexdee.Observer do
     :status,
     :resp_headers,
     :closing?,
-    :client_options
+    :client_options,
+    :last_pinged_at
   ]
 
   def start_link(options) do
@@ -61,12 +62,15 @@ defmodule Lexdee.Observer do
       |> List.flatten()
       |> Keyword.put(:protocols, [:http1])
 
+    Process.send_after(self(), :check_connectivity, 15_000)
+
     state = %__MODULE__{
       resource: resource,
       client_options: options,
       handler: handler,
       url: websocket_url,
-      feed: type
+      feed: type,
+      last_pinged_at: Keyword.get(opts, :last_pinged_at)
     }
 
     {:ok, state}
@@ -137,6 +141,32 @@ defmodule Lexdee.Observer do
   end
 
   @impl true
+  def handle_info(:check_connectivity, state) do
+    timestamp = DateTime.to_unix(DateTime.utc_now())
+
+    if state.last_pinged_at && timestamp - state.last_pinged_at > 11 do
+      @task.async(fn ->
+        %{
+          "feed" => state.feed,
+          "type" => "connection",
+          "state" => "disconnected",
+          "metadata" => %{
+            "last_pinged_at" => state.last_pinged_at,
+            "checked_at" => timestamp
+          }
+        }
+        |> Observation.new(state.resource)
+        |> state.handler.handle_event()
+      end)
+    end
+
+    {:ok, state} = send_frame(state, {:pong, "ok"})
+
+    Process.send_after(self(), :check_connectivity, 15_000)
+
+    {:noreply, state}
+  end
+
   def handle_info({ref, _}, state) when is_reference(ref) do
     {:noreply, state}
   end
@@ -262,6 +292,10 @@ defmodule Lexdee.Observer do
           |> Observation.new(state.resource)
           |> state.handler.handle_event()
         end)
+
+        timestamp = DateTime.to_unix(DateTime.utc_now())
+
+        state = put_in(state.last_pinged_at, timestamp)
 
         {:ok, state} = send_frame(state, {:pong, "ok"})
         state
