@@ -9,7 +9,7 @@ defmodule Lexdee.ObserverTest do
 
     client = Lexdee.create_client("http://localhost:#{uri.port}")
 
-    {:ok, url: url, client: client}
+    {:ok, url: url, client: client, server_ref: server_ref}
   end
 
   describe "connect" do
@@ -89,20 +89,24 @@ defmodule Lexdee.ObserverTest do
       end
     end
 
-    test "can receive ping", %{url: url, client: client} do
-      timestamp = DateTime.add(DateTime.utc_now(), -12)
-
+    test "can check connectivity", %{
+      url: url,
+      client: client,
+      server_ref: server_ref
+    } do
       assert {:ok, pid} =
                Lexdee.Observer.start_link(
                  url: url,
                  client: client,
                  handler: ConnectivityHandler,
-                 last_pinged_at: DateTime.to_unix(timestamp)
+                 parent: self()
                )
+
+      WebsocketServerMock.shutdown(server_ref)
 
       send(pid, :check_connectivity)
 
-      assert_receive "ok"
+      assert_receive :closed
     end
   end
 
