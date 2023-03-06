@@ -119,7 +119,7 @@ defmodule Lexdee.Observer do
       state = %{state | conn: conn, request_ref: ref, caller: from}
       {:noreply, state}
     else
-      {:error, %Mint.TransportError{reason: :econnrefused} = reason} ->
+      {:error, %Mint.TransportError{reason: _reason} = reason} ->
         @task.async(fn ->
           %{
             "feed" => state.feed,
