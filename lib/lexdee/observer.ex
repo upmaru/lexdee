@@ -21,7 +21,8 @@ defmodule Lexdee.Observer do
     :status,
     :resp_headers,
     :closing?,
-    :client_options
+    :client_options,
+    :last_pinged_at
   ]
 
   def start_link(options) do
