@@ -160,7 +160,7 @@ defmodule Lexdee.Observer do
       end)
     end
 
-    {:ok, state} = send_frame(state, {:pong, "ok"})
+    send_frame(state, {:pong, "ok"})
 
     Process.send_after(self(), :check_connectivity, 15_000)
 
