@@ -77,4 +77,16 @@ defmodule Lexdee.ObservationTest do
 
     assert %Lexdee.Lifecycle{} = event.object
   end
+
+  test "can parse logging event" do
+    payload = File.read!("test/support/fixtures/websocket/logging.json")
+
+    assert %Lexdee.Observation{event: %Lexdee.Event{} = event} =
+             Lexdee.Observation.new(Jason.decode!(payload), %{
+               type: "cluster",
+               id: 1
+             })
+
+    assert %Lexdee.Logging{} = event.object
+  end
 end

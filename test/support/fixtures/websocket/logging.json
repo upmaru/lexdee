@@ -1,0 +1,14 @@
+{
+  "location": "upmaru-stage-02",
+  "metadata": {
+    "context": {
+      "id": "c74492fe-3afc-4611-8d9b-62c65b785296", 
+      "local": "188.166.245.201:8443", 
+      "remote": "124.122.56.64:54578"
+    },
+    "level": "debug", 
+    "message": "Event listener server handler started"
+  }, 
+  "timestamp": "2023-03-07T06:42:49.916203969Z",
+  "type": "logging"
+}

@@ -72,6 +72,17 @@ defmodule Lexdee.Observation do
     struct(Lexdee.Lifecycle, metadata)
   end
 
+  defp build_object(%{"type" => "logging", "metadata" => metadata})
+       when is_map(metadata) do
+    metadata =
+      metadata
+      |> Enum.map(fn {key, value} ->
+        {String.to_atom(key), value}
+      end)
+
+    struct(Lexdee.Logging, metadata)
+  end
+
   defp parse_metadata(metadata, "websocket") do
     metadata =
       metadata
