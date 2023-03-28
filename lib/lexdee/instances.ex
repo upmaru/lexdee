@@ -10,8 +10,10 @@ defmodule Lexdee.Instances do
           {:error, any} | {:ok, Tesla.Env.t()}
   def index(client, options \\ []), do: Tesla.get(client, @path, options)
 
-  @spec show(Tesla.Client.t(), binary(), Keyword.t()) :: {:error, any} | {:ok, Tesla.Env.t()}
-  def show(client, id, options \\ []), do: Tesla.get(client, Path.join(@path, id), options)
+  @spec show(Tesla.Client.t(), binary(), Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def show(client, id, options \\ []),
+    do: Tesla.get(client, Path.join(@path, id), options)
 
   @spec create(Tesla.Client.t(), map, Keyword.t()) ::
           {:error, any} | {:ok, Tesla.Env.t()}

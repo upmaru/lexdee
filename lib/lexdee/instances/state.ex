@@ -29,6 +29,11 @@ defmodule Lexdee.Instances.State do
         "stateful" => Keyword.get(options, :stateful, false)
       })
 
-    Tesla.put(client, Path.join([Instances.base_path(), id, @path]), params, options)
+    Tesla.put(
+      client,
+      Path.join([Instances.base_path(), id, @path]),
+      params,
+      options
+    )
   end
 end
