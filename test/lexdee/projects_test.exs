@@ -41,6 +41,20 @@ defmodule Lexdee.ProjectsTest do
       assert {:ok, %{body: project}} = Lexdee.get_project(client, "test")
       assert %{"config" => _config} = project
     end
+
+    test "project not found", %{bypass: bypass, client: client} do
+      response =
+        File.read!("test/support/fixtures/responses/projects/not_found.json")
+
+      Bypass.expect(bypass, "GET", "/1.0/projects/notfound", fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(404, response)
+      end)
+
+      assert {:error, %{"error_code" => 404}} =
+               Lexdee.get_project(client, "notfound")
+    end
   end
 
   describe "create project" do
