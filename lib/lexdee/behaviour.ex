@@ -1,4 +1,7 @@
 defmodule Lexdee.Behaviour do
+  @callback get_instance(struct, binary) :: {:ok, map} | {:error, any}
+  @callback get_instance(struct, binary, Keyword.t()) ::
+              {:ok, map} | {:error, any}
   @callback get_project(struct, binary) :: {:ok, map} | {:error, any}
   @callback create_project(struct, map) :: {:ok, map} | {:error, any}
   @callback show_instance_log(struct, binary, binary) ::
