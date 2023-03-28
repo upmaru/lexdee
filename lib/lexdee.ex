@@ -89,7 +89,7 @@ defmodule Lexdee do
     to: Instances.State,
     as: :restart
 
-  defdelegate create_file(client, id, path, content),
+  defdelegate create_file(client, id, path, content, options \\ []),
     to: Instances.Files,
     as: :create
 
