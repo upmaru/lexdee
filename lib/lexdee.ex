@@ -18,6 +18,16 @@ defmodule Lexdee do
     to: Client,
     as: :new
 
+  alias Lexdee.Projects
+
+  defdelegate list_projects(client, opts \\ []), to: Projects, as: :index
+  defdelegate get_project(client, id), to: Projects, as: :show
+  defdelegate create_project(client, params), to: Projects, as: :create
+
+  defdelegate update_project(client, id, params, opts \\ []),
+    to: Projects,
+    as: :update
+
   alias Lexdee.Profiles
 
   defdelegate list_profiles(client, opts \\ []), to: Profiles, as: :index
