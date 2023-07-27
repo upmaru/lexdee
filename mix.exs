@@ -4,7 +4,7 @@ defmodule Lexdee.MixProject do
   def project do
     [
       app: :lexdee,
-      version: "2.3.5",
+      version: "2.3.6",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -44,12 +44,12 @@ defmodule Lexdee.MixProject do
   defp deps do
     [
       # HTTP Client
-      {:tesla, "~> 1.4.0"},
+      {:tesla, "~> 1.7.0"},
       {:jason, ">= 1.0.0"},
 
       # HTTP Adapter
       {:castore, "~> 0.1.0"},
-      {:mint, "~> 1.4"},
+      {:mint, "~> 1.5"},
       {:mint_web_socket, "~> 1.0.2"},
 
       # Certificate Management
