@@ -8,7 +8,8 @@ defmodule Lexdee.Client do
     middleware = [
       Lexdee.Response,
       {Tesla.Middleware.BaseUrl, base_url},
-      Tesla.Middleware.JSON
+      Tesla.Middleware.JSON,
+      {Tesla.Middleware.Logger, [debug: false]}
     ]
 
     adapter = get_adapter(cert, key)
