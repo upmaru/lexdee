@@ -1,6 +1,6 @@
 # Lexdee
 
-**TODO: Add description**
+Elixir client library for LXD api.
 
 ## Installation
 
@@ -10,7 +10,7 @@ by adding `lexdee` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:lexdee, "~> 1.0.0"}
+    {:lexdee, "~> 2.0.0"}
   ]
 end
 ```

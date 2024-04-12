@@ -1,3 +1,3 @@
-use Mix.Config
+import Mix.Config
 
-config :lexdee, :environment, :test
+import_config "#{Mix.env()}.exs"

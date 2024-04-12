@@ -18,6 +18,16 @@ defmodule Lexdee do
     to: Client,
     as: :new
 
+  alias Lexdee.Projects
+
+  defdelegate list_projects(client, opts \\ []), to: Projects, as: :index
+  defdelegate get_project(client, id), to: Projects, as: :show
+  defdelegate create_project(client, params), to: Projects, as: :create
+
+  defdelegate update_project(client, id, params, opts \\ []),
+    to: Projects,
+    as: :update
+
   alias Lexdee.Profiles
 
   defdelegate list_profiles(client, opts \\ []), to: Profiles, as: :index
@@ -51,9 +61,11 @@ defmodule Lexdee do
     as: :perform
 
   defdelegate list_instances(client, options \\ []), to: Instances, as: :index
-  defdelegate get_instance(client, id), to: Instances, as: :show
+  defdelegate get_instance(client, id, options \\ []), to: Instances, as: :show
 
-  defdelegate delete_instance(client, id), to: Instances, as: :remove
+  defdelegate delete_instance(client, id, opts \\ []),
+    to: Instances,
+    as: :remove
 
   defdelegate create_instance(client, params, opts \\ []),
     to: Instances,
@@ -77,7 +89,7 @@ defmodule Lexdee do
     to: Instances.State,
     as: :restart
 
-  defdelegate create_file(client, id, path, content),
+  defdelegate create_file(client, id, path, content, options \\ []),
     to: Instances.Files,
     as: :create
 
