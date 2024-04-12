@@ -4,14 +4,14 @@ defmodule Lexdee.Client do
     PrivateKey
   }
 
-  def new(base_url, cert \\ nil, key \\ nil) do
+  def new(base_url, cert \\ nil, key \\ nil, options \\ []) do
     middleware = [
       Lexdee.Response,
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON
     ]
 
-    adapter = get_adapter(cert, key)
+    adapter = get_adapter(cert, key, options)
 
     Tesla.client(middleware, adapter)
   end
@@ -30,12 +30,14 @@ defmodule Lexdee.Client do
     |> Certificate.to_der()
   end
 
-  defp get_adapter(cert, key) do
+  defp get_adapter(cert, key, options) do
     if Application.get_env(:lexdee, :environment) == :test do
       {Tesla.Adapter.Mint, []}
     else
+      timeout = Keyword.get(options, :timeout, 30_000)
+
       {Tesla.Adapter.Mint,
-       timeout: 30_000,
+       timeout: timeout,
        transport_opts: [
          verify: :verify_none,
          cert: build_cert(cert || File.read!(cert_path())),
