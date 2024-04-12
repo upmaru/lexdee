@@ -14,7 +14,7 @@ defmodule Lexdee do
   """
   alias Lexdee.Client
 
-  defdelegate create_client(base_url, cert \\ nil, key \\ nil),
+  defdelegate create_client(base_url, cert \\ nil, key \\ nil, options \\ []),
     to: Client,
     as: :new
 
