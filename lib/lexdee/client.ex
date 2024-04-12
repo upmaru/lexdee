@@ -31,11 +31,11 @@ defmodule Lexdee.Client do
   end
 
   defp get_adapter(cert, key, options) do
-    if Application.get_env(:lexdee, :environment) == :test do
-      {Tesla.Adapter.Mint, []}
-    else
-      timeout = Keyword.get(options, :timeout, 30_000)
+    timeout = Keyword.get(options, :timeout, 30_000)
 
+    if Application.get_env(:lexdee, :environment) == :test do
+      {Tesla.Adapter.Mint, timeout: timeout}
+    else
       {Tesla.Adapter.Mint,
        timeout: timeout,
        transport_opts: [
