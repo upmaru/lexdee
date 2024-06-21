@@ -1,0 +1,30 @@
+<!-- livebook:{"app_settings":{"auto_shutdown_ms":5000,"slug":"example"}} -->
+
+# Instance Management
+
+## Initiate Client
+
+```elixir
+client = Lexdee.create_client("https://198.19.249.76:8443")
+```
+
+## Create Instance
+
+```elixir
+lxd_instance_params = %{
+  "ephemeral" => false,
+  "type" => "container",
+  "name" => "lexdee-02",
+  "architecture" => "aarch64",
+  "profiles" => ["default"],
+  "source" => %{
+    "type" => "image",
+    "mode" => "pull",
+    "protocol" => "simplestreams",
+    "server" => "https://images.opsmaru.dev/spaces/a0cf807dab17e69638e0680c",
+    "alias" => "alpine/3.18"
+  }
+}
+
+Lexdee.create_instance(client, lxd_instance_params)
+```
