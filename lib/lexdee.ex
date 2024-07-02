@@ -75,7 +75,9 @@ defmodule Lexdee do
     to: Instances.Logs,
     as: :show
 
-  defdelegate get_state(client, id), to: Instances.State, as: :show
+  defdelegate get_state(client, id, options \\ []),
+    to: Instances.State,
+    as: :show
 
   defdelegate start_instance(client, id, options \\ []),
     to: Instances.State,
