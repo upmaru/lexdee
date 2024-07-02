@@ -1,4 +1,6 @@
 defmodule Lexdee.Behaviour do
+  @callback get_state(struct, binary, Keyword.t()) :: {:ok, map} | {:error, any}
+
   @callback get_instance(struct, binary) :: {:ok, map} | {:error, any}
   @callback get_instance(struct, binary, Keyword.t()) ::
               {:ok, map} | {:error, any}

@@ -3,8 +3,10 @@ defmodule Lexdee.Instances.State do
 
   @path "/state"
 
-  @spec show(Tesla.Client.t(), binary) :: {:error, any} | {:ok, Tesla.Env.t()}
-  def show(client, id), do: Tesla.get(client, Path.join(id, @path))
+  @spec show(Tesla.Client.t(), binary, Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def show(client, id, options \\ []),
+    do: Tesla.get(client, Path.join(id, @path), options)
 
   @spec start(Tesla.Client.t(), binary, Keyword.t()) ::
           {:error, any} | {:ok, Tesla.Env.t()}
