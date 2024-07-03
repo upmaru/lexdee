@@ -112,4 +112,10 @@ defmodule Lexdee do
   defdelegate list_network_leases(client, id, options \\ []),
     to: Networks.Leases,
     as: :index
+
+  alias Lexdee.Images
+
+  defdelegate delete_image(client, fingerprint, options \\ []),
+    to: Images,
+    as: :remove
 end
