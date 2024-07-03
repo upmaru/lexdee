@@ -1,0 +1,26 @@
+{
+  "type": "async",
+  "status": "Operation created",
+  "status_code": 100,
+  "operation": "/1.0/operations/cacccf96-c1c1-44c3-bc4a-2790689ee9e8",
+  "error_code": 0,
+  "error": "",
+  "metadata": {
+    "id": "cacccf96-c1c1-44c3-bc4a-2790689ee9e8",
+    "class": "task",
+    "description": "Deleting image",
+    "created_at": "2024-07-03T03:36:31.263738129Z",
+    "updated_at": "2024-07-03T03:36:31.263738129Z",
+    "status": "Running",
+    "status_code": 103,
+    "resources": {
+      "images": [
+        "/1.0/images/fcfbb271b12ecb50b5a686fcc74ad1920d254b3127ce0f76172014c3370457d1?project=icepak-test"
+      ]
+    },
+    "metadata": null,
+    "may_cancel": false,
+    "err": "",
+    "location": "none"
+  }
+}
