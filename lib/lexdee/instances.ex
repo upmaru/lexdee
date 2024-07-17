@@ -20,6 +20,11 @@ defmodule Lexdee.Instances do
   def create(client, params, opts \\ []),
     do: post(client, @path, params, opts)
 
+  @spec update(Tesla.Client.t(), binary(), map, Keyword.t()) ::
+          {:error, any} | {:ok, Tesla.Env.t()}
+  def update(client, id, params, options \\ []),
+    do: patch(client, Path.join(@path, id), params, options)
+
   @spec remove(Tesla.Client.t(), binary(), Keyword.t()) ::
           {:ok, Tesla.Env.t()} | {:error, any()}
   def remove(client, id, options \\ []),

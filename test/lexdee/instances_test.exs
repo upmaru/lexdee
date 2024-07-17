@@ -89,6 +89,44 @@ defmodule Lexdee.InstancesTest do
     end
   end
 
+  describe "update instance" do
+    setup do
+      response =
+        File.read!("test/support/fixtures/responses/instances/update.json")
+
+      {:ok, response: response}
+    end
+
+    test "return success for updated instance", %{
+      bypass: bypass,
+      client: client,
+      response: response
+    } do
+      Bypass.expect(
+        bypass,
+        "PATCH",
+        "/1.0/instances/something",
+        fn conn ->
+          assert conn.query_string == "target=lxd-experiment"
+
+          conn
+          |> Plug.Conn.put_resp_header("content-type", "application/json")
+          |> Plug.Conn.resp(200, response)
+        end
+      )
+
+      assert {:ok, _data} =
+               Lexdee.update_instance(
+                 client,
+                 "something",
+                 %{
+                   "profiles" => ["some-profile"]
+                 },
+                 query: [target: "lxd-experiment"]
+               )
+    end
+  end
+
   describe "delete instance" do
     setup do
       response =
