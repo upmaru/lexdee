@@ -18,6 +18,10 @@ defmodule Lexdee do
     to: Client,
     as: :new
 
+  alias Lexdee.Resources
+
+  defdelegate show_resources(client, node \\ nil), to: Resources, as: :show
+
   alias Lexdee.Projects
 
   defdelegate list_projects(client, opts \\ []), to: Projects, as: :index
