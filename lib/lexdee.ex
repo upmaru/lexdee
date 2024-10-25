@@ -22,6 +22,10 @@ defmodule Lexdee do
 
   defdelegate show_resources(client, node \\ nil), to: Resources, as: :show
 
+  alias Lexdee.Metrics
+
+  defdelegate list_metrics(client, options \\ []), to: Metrics, as: :index
+
   alias Lexdee.Projects
 
   defdelegate list_projects(client, opts \\ []), to: Projects, as: :index
