@@ -23,18 +23,28 @@ defmodule Lexdee.Observer do
     :resp_headers,
     :closing?,
     :client_options,
-    :last_pinged_at
+    :last_pinged_at,
+    :node
   ]
 
-  def connect(pid) do
-    GenServer.call(pid, :connect)
+  def which_node(pid) do
+    GenServer.call(pid, :node)
+  end
+
+  def connect(supervisor, pid) do
+    node = which_node(pid)
+
+    task =
+      Task.Supervisor.async_nolink({supervisor, node}, fn ->
+        GenServer.call(pid, :connect)
+      end)
+
+    Task.yield(task)
   end
 
   def start_link(options) do
-    name = Keyword.get(options, :name)
-
-    with {:ok, pid} <- GenServer.start_link(__MODULE__, options, name: name),
-         {:ok, :connected} <- connect(pid) do
+    with {:ok, pid} <- GenServer.start_link(__MODULE__, options, []),
+         {:ok, :connected} <- GenServer.call(pid, :connect) do
       {:ok, pid}
     end
   end
@@ -77,13 +87,18 @@ defmodule Lexdee.Observer do
       handler: handler,
       url: websocket_url,
       feed: type,
-      parent: parent
+      parent: parent,
+      node: Node.self()
     }
 
     {:ok, state}
   end
 
   @impl true
+  def handle_call(:node, _from, state) do
+    {:reply, state.node, state}
+  end
+
   def handle_call(:connect, from, state) do
     uri = URI.parse(state.url)
 
