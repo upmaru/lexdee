@@ -59,7 +59,7 @@ defmodule Lexdee.Observer do
 
     client = Keyword.fetch!(opts, :client)
     resource = Keyword.get(opts, :resource)
-    type = Keyword.get(opts, :type, "operation")
+    type = to_string(Keyword.get(opts, :type, "operation"))
 
     %{adapter: {_, _, options}, pre: middlewares} = client
 
