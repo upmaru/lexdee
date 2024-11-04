@@ -26,11 +26,15 @@ defmodule Lexdee.Observer do
     :last_pinged_at
   ]
 
+  def connect(pid) do
+    GenServer.call(pid, :connect)
+  end
+
   def start_link(options) do
     name = Keyword.get(options, :name)
 
     with {:ok, pid} <- GenServer.start_link(__MODULE__, options, name: name),
-         {:ok, :connected} <- GenServer.call(pid, :connect) do
+         {:ok, :connected} <- connect(pid) do
       {:ok, pid}
     end
   end
