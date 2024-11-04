@@ -4,7 +4,7 @@ defmodule Lexdee.MixProject do
   def project do
     [
       app: :lexdee,
-      version: "2.4.4",
+      version: "2.4.5",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
