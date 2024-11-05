@@ -31,6 +31,10 @@ defmodule Lexdee.Observer do
     GenServer.call(pid, :node)
   end
 
+  def connect(pid) do
+    GenServer.call(pid, :connect)
+  end
+
   def connect(supervisor, pid) do
     node = which_node(pid)
 
@@ -43,10 +47,7 @@ defmodule Lexdee.Observer do
   end
 
   def start_link(options) do
-    with {:ok, pid} <- GenServer.start_link(__MODULE__, options, []),
-         {:ok, :connected} <- GenServer.call(pid, :connect) do
-      {:ok, pid}
-    end
+    GenServer.start_link(__MODULE__, options, [])
   end
 
   @impl true
@@ -370,6 +371,11 @@ defmodule Lexdee.Observer do
     _ = send_frame(state, :close)
     Mint.HTTP.close(state.conn)
     {:stop, :normal, state}
+  end
+
+  defp reply(state, {:ok, :connected}) do
+    if state.caller, do: GenServer.reply(state.caller, {:ok, state})
+    put_in(state.caller, nil)
   end
 
   defp reply(state, response) do

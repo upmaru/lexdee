@@ -41,12 +41,14 @@ defmodule Lexdee.ObserverTest do
     end
 
     test "can receive ping", %{url: url, client: client} do
-      assert {:ok, _pid} =
+      assert {:ok, pid} =
                Lexdee.Observer.start_link(
                  url: url,
                  client: client,
                  handler: PingHandler
                )
+
+      Lexdee.Observer.connect(pid)
 
       server_pid = WebsocketServerMock.receive_socket_pid()
 
@@ -62,6 +64,8 @@ defmodule Lexdee.ObserverTest do
                  client: client,
                  handler: PingHandler
                )
+
+      Lexdee.Observer.connect(pid)
 
       send(pid, :check_connectivity)
 
@@ -102,6 +106,8 @@ defmodule Lexdee.ObserverTest do
                  parent: self()
                )
 
+      {:ok, _state} = Lexdee.Observer.connect(pid)
+
       WebsocketServerMock.shutdown(server_ref)
 
       send(pid, :check_connectivity)
@@ -139,12 +145,14 @@ defmodule Lexdee.ObserverTest do
     end
 
     test "can receive task event", %{url: url, client: client} do
-      assert {:ok, _pid} =
+      assert {:ok, pid} =
                Lexdee.Observer.start_link(
                  url: url,
                  client: client,
                  handler: TextHandler
                )
+
+      Lexdee.Observer.connect(pid)
 
       server_pid = WebsocketServerMock.receive_socket_pid()
 
@@ -156,12 +164,14 @@ defmodule Lexdee.ObserverTest do
     end
 
     test "can receive websocket", %{url: url, client: client} do
-      assert {:ok, _pid} =
+      assert {:ok, pid} =
                Lexdee.Observer.start_link(
                  url: url,
                  client: client,
                  handler: TextHandler
                )
+
+      {:ok, _state} = Lexdee.Observer.connect(pid)
 
       server_pid = WebsocketServerMock.receive_socket_pid()
 
@@ -172,12 +182,14 @@ defmodule Lexdee.ObserverTest do
     end
 
     test "can receive lifecycle", %{url: url, client: client} do
-      assert {:ok, _pid} =
+      assert {:ok, pid} =
                Lexdee.Observer.start_link(
                  url: url,
                  client: client,
                  handler: TextHandler
                )
+
+      {:ok, _state} = Lexdee.Observer.connect(pid)
 
       server_pid = WebsocketServerMock.receive_socket_pid()
 
