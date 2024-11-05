@@ -46,6 +46,8 @@ defmodule Lexdee.Observer do
     with {:ok, pid} <- GenServer.start_link(__MODULE__, options, []),
          {:ok, :connected} <- GenServer.call(pid, :connect) do
       {:ok, pid}
+    else
+      {:error, reason} -> {:error, reason}
     end
   end
 
