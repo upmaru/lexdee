@@ -35,15 +35,14 @@ defmodule Lexdee.Observer do
     GenServer.call(pid, :connect)
   end
 
-  def connect(supervisor, pid) do
+  def connect(supervisor, pid) when is_pid(pid) do
     node = which_node(pid)
 
-    task =
-      Task.Supervisor.async_nolink({supervisor, node}, fn ->
-        GenServer.call(pid, :connect)
-      end)
-
-    Task.yield(task)
+    {supervisor, node}
+    |> Task.Supervisor.async_nolink(fn ->
+      GenServer.call(pid, :connect)
+    end)
+    |> Task.await()
   end
 
   def start_link(options) do
