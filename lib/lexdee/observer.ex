@@ -74,10 +74,17 @@ defmodule Lexdee.Observer do
       Keyword.get(opts, :url) ||
         "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
 
+    timeout = Keyword.get(options, :timeout, 30_000)
+    transport_opts =
+      options
+      |> Keyword.get(:transport_opts, [])
+      |> Keyword.put(:timeout, timeout)
+
     options =
       options
       |> List.flatten()
       |> Keyword.put(:protocols, [:http1])
+      |> Keyword.put(:transport_opts, transport_opts)
 
     Process.send_after(self(), :check_connectivity, 15_000)
 
