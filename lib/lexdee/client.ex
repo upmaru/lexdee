@@ -34,7 +34,7 @@ defmodule Lexdee.Client do
     timeout = Keyword.get(options, :timeout, 30_000)
 
     if Application.get_env(:lexdee, :environment) == :test do
-      {Tesla.Adapter.Mint, timeout: timeout}
+      {Tesla.Adapter.Mint, timeout: timeout, transport_opts: []}
     else
       {Tesla.Adapter.Mint,
        timeout: timeout,

@@ -61,7 +61,7 @@ defmodule Lexdee.Observer do
     resource = Keyword.get(opts, :resource)
     type = to_string(Keyword.get(opts, :type, "operation"))
 
-    %{adapter: {_, _, options}, pre: middlewares} = client
+    %{adapter: {_, _, [options]}, pre: middlewares} = client
 
     {_, _, [base_url]} =
       Enum.find(middlewares, fn {k, _, _v} ->
@@ -75,14 +75,14 @@ defmodule Lexdee.Observer do
         "wss://#{base_uri.host}:#{base_uri.port}/1.0/events?type=#{type}"
 
     timeout = Keyword.get(options, :timeout, 30_000)
+
     transport_opts =
       options
-      |> Keyword.get(:transport_opts, [])
+      |> Keyword.fetch!(:transport_opts)
       |> Keyword.put(:timeout, timeout)
 
     options =
       options
-      |> List.flatten()
       |> Keyword.put(:protocols, [:http1])
       |> Keyword.put(:transport_opts, transport_opts)
 
